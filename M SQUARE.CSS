@@ -1,0 +1,194 @@
+:root {
+    --primary: #003366;
+    --accent: #ff6600;
+    --light: #f8f9fa;
+    --dark: #212529;
+    --highlight: #ff9900;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+body {
+    background-color: var(--light);
+}
+
+.main-header {
+    background: linear-gradient(135deg, var(--primary), #002244);
+    color: white;
+    padding: 2.5rem 0;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.header-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.branding {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.logo {
+    width: 70px;
+    height: 70px;
+    background-color: var(--accent);
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: bold;
+    color: white;
+    box-shadow: 0 5px 15px rgba(255, 102, 0, 0.3);
+    transform: rotate(15deg);
+}
+
+.title-group h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(to right, white, #e6f2ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.title-group p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    font-weight: 300;
+}
+
+.price-direction-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 2rem;
+}
+
+.price-range {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    padding-right: 2rem;
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.price-segment {
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    background-color: rgba(255, 255, 255, 0.08);
+    transition: all 0.3s ease;
+}
+
+.price-segment:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    transform: translateX(5px);
+}
+
+.price-segment.highlight {
+    background: linear-gradient(90deg, rgba(255,102,0,0.2), rgba(255,153,0,0.1));
+    border-left: 3px solid var(--highlight);
+}
+
+.price-link {
+    color: white;
+    text-decoration: none;
+    display: block;
+}
+
+.price-segment .price {
+    font-size: 1.4rem;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 0.3rem;
+}
+
+.price-segment .label {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.direction-links {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.2rem;
+}
+
+.dir-link {
+    display: flex;
+    flex-direction: column;
+    padding: 1.2rem;
+    border-radius: 12px;
+    background-color: rgba(255, 255, 255, 0.08);
+    text-decoration: none;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.dir-link:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.dir-link i {
+    font-size: 1.2rem;
+    margin-bottom: 0.8rem;
+    color: var(--accent);
+}
+
+.dir-link span {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 0.3rem;
+}
+
+.dir-link small {
+    font-size: 0.85rem;
+    opacity: 0.8;
+}
+
+@media (max-width: 900px) {
+    .price-direction-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .price-range {
+        border-right: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        padding-right: 0;
+        padding-bottom: 2rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .branding {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .direction-links {
+        grid-template-columns: 1fr;
+    }
+    
+    .title-group h1 {
+        font-size: 2rem;
+    }
+    
+    .logo {
+        width: 60px;
+        height: 60px;
+        font-size: 1.8rem;
+    }
+}
