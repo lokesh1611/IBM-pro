@@ -1,0 +1,3370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobConnect | Applicant Tracking Portal</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #3b82f6;
+            --accent-color: #1d4ed8;
+            --light-color: #f8fafc;
+            --dark-color: #1e293b;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --gray-color: #64748b;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f5f7fa;
+            color: var(--dark-color);
+            overflow-x: hidden;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+        }
+        
+        /* Navigation */
+        .navbar {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 1rem 0;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 1.8rem;
+        }
+        
+        .navbar-brand span {
+            color: var(--accent-color);
+        }
+        
+        /* Page Container */
+        .page-container {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .active-page {
+            display: block;
+        }
+        
+        /* Cards */
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Buttons */
+        .btn-primary {
+            background-color: var(--primary-color);
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--accent-color);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.2);
+        }
+        
+        .btn-outline-primary {
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            padding: 0.7rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-outline-primary:hover {
+            background-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.2);
+        }
+        
+        /* Forms */
+        .form-control {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        
+        /* Login/Signup Page */
+        .auth-container {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: calc(100vh - 76px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        
+        .auth-card {
+            background-color: white;
+            border-radius: 16px;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 450px;
+            animation: slideUp 0.5s ease;
+        }
+        
+        .auth-tabs .nav-link {
+            color: var(--gray-color);
+            font-weight: 500;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            margin-right: 0.5rem;
+        }
+        
+        .auth-tabs .nav-link.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        /* Job Posting Page */
+        .job-category-card {
+            height: 100%;
+            text-align: center;
+            padding: 2rem 1rem;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        
+        .job-category-card.selected {
+            border-color: var(--primary-color);
+            background-color: rgba(37, 99, 235, 0.05);
+        }
+        
+        .job-category-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        /* Candidate Application Page */
+        .application-form-container {
+            background-color: white;
+            border-radius: 16px;
+            padding: 2.5rem;
+            animation: slideUp 0.5s ease;
+        }
+        
+        .file-upload-area {
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            padding: 3rem 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .file-upload-area:hover, .file-upload-area.dragover {
+            border-color: var(--primary-color);
+            background-color: rgba(37, 99, 235, 0.05);
+        }
+        
+        /* Admin Panel */
+        .admin-sidebar {
+            background-color: var(--dark-color);
+            color: white;
+            min-height: calc(100vh - 76px);
+            padding: 2rem 0;
+        }
+        
+        .admin-sidebar .nav-link {
+            color: #cbd5e1;
+            padding: 0.75rem 1.5rem;
+            border-left: 4px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .admin-sidebar .nav-link:hover, .admin-sidebar .nav-link.active {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-left-color: var(--primary-color);
+        }
+        
+        .stats-card {
+            text-align: center;
+            padding: 1.5rem;
+            border-radius: 12px;
+            color: white;
+        }
+        
+        .stats-card.primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        }
+        
+        .stats-card.success {
+            background: linear-gradient(135deg, var(--success-color), #34d399);
+        }
+        
+        .stats-card.warning {
+            background: linear-gradient(135deg, var(--warning-color), #fbbf24);
+        }
+        
+        .stats-card.danger {
+            background: linear-gradient(135deg, var(--danger-color), #f87171);
+        }
+        
+        .applicant-row {
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1rem 0;
+            transition: background-color 0.2s ease;
+        }
+        
+        .applicant-row:hover {
+            background-color: #f8fafc;
+        }
+        
+        /* Notifications */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            min-width: 300px;
+            max-width: 400px;
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            animation: slideInRight 0.3s ease, fadeOut 0.5s ease 3s forwards;
+        }
+        
+        .notification-success {
+            background-color: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid var(--success-color);
+        }
+        
+        .notification-error {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid var(--danger-color);
+        }
+        
+        .notification-warning {
+            background-color: #fef3c7;
+            color: #92400e;
+            border-left: 4px solid var(--warning-color);
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { 
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideInRight {
+            from { 
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to { 
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        
+        /* Footer */
+        .footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+        
+        /* Progress Steps */
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin: 2rem 0 3rem;
+        }
+        
+        .progress-steps::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: #e2e8f0;
+            z-index: 1;
+            transform: translateY(-50%);
+        }
+        
+        .step {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: white;
+            border: 3px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: var(--gray-color);
+            position: relative;
+            z-index: 2;
+        }
+        
+        .step.active {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            background-color: white;
+        }
+        
+        .step.completed {
+            border-color: var(--primary-color);
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .step-label {
+            position: absolute;
+            top: 45px;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            font-size: 0.85rem;
+            color: var(--gray-color);
+        }
+        
+        .step.active .step-label {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+        
+        /* OTP Modal */
+        .otp-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+        }
+        
+        .otp-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            max-width: 400px;
+            width: 90%;
+        }
+        
+        /* OTP Inputs */
+        .otp-inputs {
+            display: flex;
+            justify-content: space-between;
+            margin: 1.5rem 0;
+        }
+        
+        .otp-input {
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            font-size: 1.5rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .otp-input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+        
+        /* Profile Icon */
+        .profile-icon-container {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+        }
+        
+        .profile-icon {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .profile-icon:hover {
+            color: var(--accent-color);
+            transform: scale(1.1);
+        }
+        
+        .profile-details {
+            position: absolute;
+            right: 0;
+            top: 40px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+            padding: 1rem;
+            min-width: 250px;
+            z-index: 100;
+            display: none;
+        }
+        
+        .profile-details.show {
+            display: block;
+            animation: slideUp 0.3s ease;
+        }
+        
+        /* Currency Select */
+        .currency-select-container {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .currency-select {
+            flex: 1;
+        }
+        
+        .salary-input {
+            flex: 2;
+        }
+        
+        /* First Time Login Alert */
+        .first-login-alert {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            z-index: 99999;
+            max-width: 400px;
+            width: 90%;
+            display: none;
+        }
+        
+        .first-login-alert.show {
+            display: block;
+            animation: slideUp 0.5s ease;
+        }
+        
+        /* Password Rules */
+        .password-rules {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+        
+        .password-rules.show {
+            display: block;
+            animation: slideUp 0.3s ease;
+        }
+        
+        .password-rules ul {
+            margin-bottom: 0;
+            padding-left: 1.2rem;
+        }
+        
+        .password-rules li {
+            font-size: 0.85rem;
+            margin-bottom: 0.25rem;
+            transition: color 0.3s ease;
+        }
+        
+        .rule-valid {
+            color: var(--success-color) !important;
+        }
+        
+        .rule-invalid {
+            color: var(--danger-color);
+        }
+        
+        /* Experience Level Options */
+        .experience-option {
+            cursor: pointer;
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .experience-option:hover {
+            border-color: var(--primary-color);
+            background-color: rgba(37, 99, 235, 0.05);
+        }
+        
+        .experience-option.selected {
+            border-color: var(--primary-color);
+            background-color: rgba(37, 99, 235, 0.1);
+        }
+        
+        /* Password Show/Hide */
+        .password-toggle {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--gray-color);
+            cursor: pointer;
+            z-index: 10;
+        }
+        
+        .password-field {
+            position: relative;
+        }
+        
+        .form-text {
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+        
+        .otp-verified {
+            color: var(--success-color);
+            font-weight: 500;
+        }
+        
+        /* Admin Panel Table */
+        .admin-table {
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .admin-table th {
+            background-color: #f8fafc;
+            font-weight: 600;
+            padding: 1rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .admin-table td {
+            padding: 1rem;
+            vertical-align: middle;
+        }
+        
+        .admin-table tr:hover {
+            background-color: #f8fafc;
+        }
+        
+        .status-badge {
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .status-pending {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+        
+        .status-shortlisted {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        
+        .status-rejected {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .status-hired {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+        
+        /* Search and Filter */
+        .search-filter-container {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Analytics Cards */
+        .analytics-card {
+            padding: 1.5rem;
+            border-radius: 12px;
+            height: 100%;
+        }
+        
+        .analytics-card .icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            opacity: 0.8;
+        }
+        
+        /* Settings Panel */
+        .settings-section {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .settings-section h5 {
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid #f1f5f9;
+        }
+        
+        /* Fixed Chart Containers */
+        .chart-container {
+            position: relative;
+            height: 250px;
+            width: 100%;
+            margin: 0 auto;
+        }
+        
+        .chart-container-large {
+            position: relative;
+            height: 300px;
+            width: 100%;
+            margin: 0 auto;
+        }
+        
+        .chart-container-small {
+            position: relative;
+            height: 200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+        
+        /* Admin Section */
+        .admin-section {
+            min-height: calc(100vh - 200px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="#"><i class="fas fa-briefcase me-2"></i>Job<span>Connect</span></a>
+            <div class="d-flex align-items-center">
+                <div class="me-3">
+                    <span id="current-user" class="text-muted">Employer Portal</span>
+                </div>
+                <button class="btn btn-outline-primary" id="logout-btn">
+                    <i class="fas fa-sign-out-alt me-1"></i> Logout
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Progress Steps -->
+    <div class="container" id="progress-container" style="display: none;">
+        <div class="progress-steps">
+            <div class="step completed" id="step-1">
+                <span>1</span>
+                <div class="step-label">Login</div>
+            </div>
+            <div class="step" id="step-2">
+                <span>2</span>
+                <div class="step-label">Job Posting</div>
+            </div>
+            <div class="step" id="step-3">
+                <span>3</span>
+                <div class="step-label">Application</div>
+            </div>
+            <div class="step" id="step-4">
+                <span>4</span>
+                <div class="step-label">Admin Panel</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Page 1: Employer Login/Signup -->
+    <div id="login-page" class="page-container active-page">
+        <div class="auth-container">
+            <div class="auth-card">
+                <h2 class="text-center mb-4">Employer Portal</h2>
+               <p class="text-center text-muted mb-4">Access your hiring dashboard or create a new account</p>
+                
+                <ul class="nav nav-pills auth-tabs mb-4 justify-content-center" id="authTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="login-tab" data-bs-toggle="pill" data-bs-target="#login" type="button" role="tab">Login</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="signup-tab" data-bs-toggle="pill" data-bs-target="#signup" type="button" role="tab">Sign Up</button>
+                    </li>
+                </ul>
+                
+                <div class="tab-content" id="authTabContent">
+                    <!-- Login Form -->
+                    <div class="tab-pane fade show active" id="login" role="tabpanel">
+                        <form id="login-form">
+                            <div class="mb-3">
+                                <label for="login-email" class="form-label">Email Address</label>
+                                <input type="email" class="form-control" id="login-email" placeholder="name@company.com" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="login-password" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="login-password" placeholder="Enter your password" required>
+                            </div>
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="remember-me">
+                                <label class="form-check-label" for="remember-me">Remember me</label>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">Login to Dashboard</button>
+                        </form>
+                    </div>
+                    
+                    <!-- Signup Form -->
+                    <div class="tab-pane fade" id="signup" role="tabpanel">
+                        <form id="signup-form">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="signup-fname" class="form-label">First Name</label>
+                                    <input type="text" class="form-control" id="signup-fname" placeholder="John" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="signup-lname" class="form-label">Last Name</label>
+                                    <input type="text" class="form-control" id="signup-lname" placeholder="Doe" required>
+                                </div>
+                            </div>
+                            
+                            <!-- Experience Level Selection -->
+                            <div class="mb-3">
+                                <label class="form-label">Experience Level</label>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <div class="experience-option" data-level="fresher">
+                                            <i class="fas fa-graduation-cap fa-2x mb-2 text-primary"></i>
+                                            <h5>Fresher</h5>
+                                            <p class="text-muted small">No professional experience</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="experience-option" data-level="experienced">
+                                            <i class="fas fa-briefcase fa-2x mb-2 text-primary"></i>
+                                            <h5>Experienced</h5>
+                                            <p class="text-muted small">Professional experience available</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Company Name Section -->
+                            <div class="mb-3" id="company-name-section" style="display: none;">
+                                <label for="signup-company" class="form-label">Company Name</label>
+                                <input type="text" class="form-control" id="signup-company" placeholder="Your Company Inc.">
+                            </div>
+                            
+                            <!-- Experience Details Section -->
+                            <div class="mb-3" id="experience-details-section" style="display: none;">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="years-experience" class="form-label">Years of Experience</label>
+                                        <select class="form-select" id="years-experience">
+                                            <option value="">Select years</option>
+                                            <option value="1-2">1-2 years</option>
+                                            <option value="3-5">3-5 years</option>
+                                            <option value="5-10">5-10 years</option>
+                                            <option value="10+">10+ years</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="previous-company" class="form-label">Previous Company</label>
+                                        <input type="text" class="form-control" id="previous-company" placeholder="Previous company name">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="signup-phone" class="form-label">Phone Number</label>
+                                <div class="input-group">
+                                    <input type="tel" class="form-control" id="signup-phone" placeholder="+91 9876543210" required>
+                                    <button type="button" class="btn btn-outline-primary" id="send-otp-btn">Send OTP</button>
+                                </div>
+                            </div>
+                            <div class="mb-3" id="otp-section" style="display: none;">
+                                <label for="signup-otp" class="form-label">Enter OTP</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="signup-otp" placeholder="Enter 6-digit OTP" maxlength="6">
+                                    <button type="button" class="btn btn-outline-success" id="verify-otp-btn">Verify</button>
+                                </div>
+                                <div class="form-text" id="otp-timer">OTP valid for: <span id="timer">05:00</span></div>
+                                <div class="form-text otp-verified" id="otp-verified-text" style="display: none;">
+                                    <i class="fas fa-check-circle"></i> Phone number verified
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="signup-email" class="form-label">Email Address</label>
+                                <input type="email" class="form-control" id="signup-email" placeholder="name@company.com" required>
+                            </div>
+                            
+                            <!-- Password Field with Show/Hide -->
+                            <div class="mb-3 password-field">
+                                <label for="signup-password" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="signup-password" placeholder="Create a password" required>
+                                <button type="button" class="password-toggle" id="toggle-password">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary mt-1" id="show-password-rules">
+                                    <i class="fas fa-info-circle me-1"></i> Password Requirements
+                                </button>
+                            </div>
+                            
+                            <!-- Password Rules -->
+                            <div class="password-rules" id="password-rules">
+                                <p class="small mb-2"><strong>Password must contain:</strong></p>
+                                <ul>
+                                    <li id="rule-length" class="rule-invalid">At least 8 characters</li>
+                                    <li id="rule-uppercase" class="rule-invalid">One uppercase letter</li>
+                                    <li id="rule-lowercase" class="rule-invalid">One lowercase letter</li>
+                                    <li id="rule-number" class="rule-invalid">One number</li>
+                                    <li id="rule-special" class="rule-invalid">One special character (!@#$%^&*)</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="mb-3 password-field">
+                                <label for="signup-confirm-password" class="form-label">Confirm Password</label>
+                                <input type="password" class="form-control" id="signup-confirm-password" placeholder="Confirm your password" required>
+                                <button type="button" class="password-toggle" id="toggle-confirm-password">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <div class="invalid-feedback" id="password-match-error" style="display: none;">
+                                    Passwords do not match
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary w-100" id="signup-submit-btn" disabled>Create Account</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Page 2: Job Posting -->
+    <div id="job-posting-page" class="page-container">
+        <div class="container py-5">
+            <div class="profile-icon-container">
+                <i class="fas fa-user-circle profile-icon" id="profile-icon"></i>
+                <div class="profile-details" id="profile-details">
+                    <h6 class="mb-3">Employer Profile</h6>
+                    <p class="mb-1"><strong>Name:</strong> <span id="profile-name">John Doe</span></p>
+                    <p class="mb-1"><strong>Experience Level:</strong> <span id="profile-experience">Fresher</span></p>
+                    <div id="profile-company-section">
+                        <p class="mb-1"><strong>Company:</strong> <span id="profile-company">Not applicable</span></p>
+                    </div>
+                    <div id="profile-experience-details-section" style="display: none;">
+                        <p class="mb-1"><strong>Years of Experience:</strong> <span id="profile-years">-</span></p>
+                        <p class="mb-1"><strong>Previous Company:</strong> <span id="profile-previous-company">-</span></p>
+                    </div>
+                    <p class="mb-1"><strong>Email:</strong> <span id="profile-email">john@techcorp.com</span></p>
+                    <p class="mb-0"><strong>Phone:</strong> <span id="profile-phone">+91 9876543210</span></p>
+                </div>
+            </div>
+            
+            <h1 class="mb-1">Create Job Posting</h1>
+            <p class="text-muted mb-4">Select a job category and provide details for your job opening</p>
+            
+            <div class="row mb-5">
+                <div class="col-md-4 mb-3">
+                    <div class="card job-category-card" data-category="tech">
+                        <div class="job-category-icon">
+                            <i class="fas fa-laptop-code"></i>
+                        </div>
+                        <h4>Technology</h4>
+                        <p class="text-muted">Software developers, IT support, DevOps, etc.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card job-category-card" data-category="marketing">
+                        <div class="job-category-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h4>Marketing</h4>
+                        <p class="text-muted">Digital marketing, SEO, content creation, etc.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card job-category-card" data-category="sales">
+                        <div class="job-category-icon">
+                            <i class="fas fa-handshake"></i>
+                        </div>
+                        <h4>Sales</h4>
+                        <p class="text-muted">Account executives, sales development, etc.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card job-category-card" data-category="finance">
+                        <div class="job-category-icon">
+                            <i class="fas fa-chart-pie"></i>
+                        </div>
+                        <h4>Finance</h4>
+                        <p class="text-muted">Accounting, financial analysis, etc.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card job-category-card" data-category="hr">
+                        <div class="job-category-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h4>Human Resources</h4>
+                        <p class="text-muted">Recruitment, employee relations, etc.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card job-category-card" data-category="other">
+                        <div class="job-category-icon">
+                            <i class="fas fa-briefcase"></i>
+                        </div>
+                        <h4>Other</h4>
+                        <p class="text-muted">Other job categories</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-body p-4">
+                    <h4 class="mb-3">Job Details</h4>
+                    <form id="job-posting-form">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="job-title" class="form-label">Job Title</label>
+                                <input type="text" class="form-control" id="job-title" placeholder="e.g. Senior Frontend Developer" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="job-location" class="form-label">Location</label>
+                                <input type="text" class="form-control" id="job-location" placeholder="e.g. Remote, New York, etc." required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="job-type" class="form-label">Job Type</label>
+                                <select class="form-select" id="job-type" required>
+                                    <option value="">Select job type</option>
+                                    <option value="full-time">Full-time</option>
+                                    <option value="part-time">Part-time</option>
+                                    <option value="contract">Contract</option>
+                                    <option value="internship">Internship</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="job-salary" class="form-label">Salary Range</label>
+                                <div class="currency-select-container">
+                                    <select class="form-select currency-select" id="job-currency">
+                                        <option value="USD">USD ($)</option>
+                                        <option value="INR">INR (₹)</option>
+                                        <option value="EUR">EUR (€)</option>
+                                        <option value="GBP">GBP (£)</option>
+                                        <option value="JPY">JPY (¥)</option>
+                                        <option value="AUD">AUD (A$)</option>
+                                        <option value="CAD">CAD (C$)</option>
+                                    </select>
+                                    <input type="text" class="form-control salary-input" id="job-salary" placeholder="e.g. 80,000 - 100,000">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="job-description" class="form-label">Job Description</label>
+                            <textarea class="form-control" id="job-description" rows="5" placeholder="Describe the role, responsibilities, and requirements..." required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="job-requirements" class="form-label">Requirements</label>
+                            <textarea class="form-control" id="job-requirements" rows="3" placeholder="List the required skills and qualifications..." required></textarea>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between mt-4">
+                            <button type="button" class="btn btn-outline-primary" id="back-to-login">
+                                <i class="fas fa-arrow-left me-1"></i> Back
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                Post Job & Continue <i class="fas fa-arrow-right ms-1"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Page 3: Candidate Application -->
+    <div id="application-page" class="page-container">
+        <div class="container py-5">
+            <h1 class="mb-1">Candidate Application</h1>
+            <p class="text-muted mb-4">Fill out the application form and upload your resume</p>
+            
+            <div class="application-form-container">
+                <div class="mb-4">
+                    <h4>Applying for: <span id="applied-job-title" class="text-primary">Senior Frontend Developer</span></h4>
+                    <p class="text-muted"><i class="fas fa-map-marker-alt me-1"></i> <span id="applied-job-location">Remote</span> | <i class="fas fa-briefcase me-1"></i> <span id="applied-job-type">Full-time</span></p>
+                </div>
+                
+                <form id="application-form">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="candidate-fname" class="form-label">First Name</label>
+                            <input type="text" class="form-control" id="candidate-fname" placeholder="John" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="candidate-lname" class="form-label">Last Name</label>
+                            <input type="text" class="form-control" id="candidate-lname" placeholder="Doe" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="candidate-email" class="form-label">Email Address</label>
+                            <input type="email" class="form-control" id="candidate-email" placeholder="john.doe@email.com" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="candidate-phone" class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" id="candidate-phone" placeholder="+1 (123) 456-7890" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="candidate-linkedin" class="form-label">LinkedIn Profile</label>
+                        <input type="url" class="form-control" id="candidate-linkedin" placeholder="https://linkedin.com/in/johndoe">
+                    </div>
+                    <div class="mb-3">
+                        <label for="candidate-cover-letter" class="form-label">Cover Letter</label>
+                        <textarea class="form-control" id="candidate-cover-letter" rows="4" placeholder="Tell us why you're a good fit for this position..."></textarea>
+                    </div>
+                    
+                    <!-- Resume Upload -->
+                    <div class="mb-4">
+                        <label class="form-label">Resume Upload</label>
+                        <div class="file-upload-area" id="resume-upload-area">
+                            <div class="mb-3">
+                                <i class="fas fa-cloud-upload-alt fa-3x text-primary"></i>
+                            </div>
+                            <h5>Drag & drop your resume here</h5>
+                            <p class="text-muted">or click to browse files</p>
+                            <p class="small text-muted">Supported formats: PDF, DOC, DOCX (Max size: 5MB)</p>
+                            <input type="file" id="resume-file" accept=".pdf,.doc,.docx" style="display: none;">
+                        </div>
+                        <div id="file-info" class="mt-3" style="display: none;">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-file-pdf text-danger me-2"></i>
+                                <div>
+                                    <strong id="file-name">resume.pdf</strong>
+                                    <p class="text-muted small mb-0" id="file-size">2.4 MB</p>
+                                </div>
+                                <button type="button" class="btn btn-sm btn-outline-danger ms-auto" id="remove-file">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <button type="button" class="btn btn-outline-primary" id="back-to-job-posting">
+                            <i class="fas fa-arrow-left me-1"></i> Back
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            Submit Application <i class="fas fa-paper-plane ms-1"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Page 4: Admin Panel -->
+    <div id="admin-page" class="page-container">
+        <div class="container-fluid">
+            <div class="row">
+                <!-- Sidebar -->
+                <div class="col-md-3 col-lg-2 px-0">
+                    <div class="admin-sidebar">
+                        <div class="text-center mb-4">
+                            <div class="mb-3">
+                                <i class="fas fa-user-circle fa-3x text-light"></i>
+                            </div>
+                            <h5 id="admin-company-name">TechCorp Inc.</h5>
+                            <p class="small text-light">Admin Dashboard</p>
+                        </div>
+                        
+                        <ul class="nav flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="#" data-section="overview">
+                                    <i class="fas fa-tachometer-alt me-2"></i> Overview
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-section="applicants">
+                                    <i class="fas fa-users me-2"></i> Applicants
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-section="jobs">
+                                    <i class="fas fa-briefcase me-2"></i> Job Postings
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-section="analytics">
+                                    <i class="fas fa-chart-bar me-2"></i> Analytics
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-section="settings">
+                                    <i class="fas fa-cog me-2"></i> Settings
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Main Content -->
+                <div class="col-md-9 col-lg-10 py-4 px-4">
+                    <!-- Overview Section -->
+                    <div id="overview-section" class="admin-section">
+                        <h2 class="mb-4">Dashboard Overview</h2>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-3 mb-3">
+                                <div class="stats-card primary">
+                                    <h3 id="total-applicants">24</h3>
+                                    <p>Total Applicants</p>
+                                    <i class="fas fa-users fa-2x opacity-50"></i>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="stats-card success">
+                                    <h3 id="active-jobs">5</h3>
+                                    <p>Active Jobs</p>
+                                    <i class="fas fa-briefcase fa-2x opacity-50"></i>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="stats-card warning">
+                                    <h3 id="pending-review">8</h3>
+                                    <p>Pending Review</p>
+                                    <i class="fas fa-clock fa-2x opacity-50"></i>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="stats-card danger">
+                                    <h3 id="rejected">3</h3>
+                                    <p>Rejected</p>
+                                    <i class="fas fa-times-circle fa-2x opacity-50"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-8 mb-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Recent Applications</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Name</th>
+                                                        <th>Position</th>
+                                                        <th>Applied Date</th>
+                                                        <th>Status</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="recent-applicants">
+                                                    <!-- Recent applicants will be populated here -->
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Application Status</h5>
+                                        <div class="chart-container">
+                                            <canvas id="statusChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between mt-5">
+                            <button type="button" class="btn btn-outline-primary" id="back-to-application">
+                                <i class="fas fa-arrow-left me-1"></i> Back to Application
+                            </button>
+                            <button type="button" class="btn btn-primary" id="finish-workflow">
+                                Complete Workflow <i class="fas fa-check-circle ms-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Applicants Section -->
+                    <div id="applicants-section" class="admin-section" style="display: none;">
+                        <h2 class="mb-4">Applicant Management</h2>
+                        
+                        <!-- Search and Filter -->
+                        <div class="search-filter-container">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                        <input type="text" class="form-control" placeholder="Search applicants by name, email, or position..." id="applicant-search">
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <select class="form-select" id="status-filter">
+                                        <option value="">All Statuses</option>
+                                        <option value="pending">Pending Review</option>
+                                        <option value="shortlisted">Shortlisted</option>
+                                        <option value="rejected">Rejected</option>
+                                        <option value="hired">Hired</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <select class="form-select" id="job-filter">
+                                        <option value="">All Job Positions</option>
+                                        <option value="frontend">Frontend Developer</option>
+                                        <option value="backend">Backend Developer</option>
+                                        <option value="fullstack">Full Stack Developer</option>
+                                        <option value="marketing">Marketing Manager</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Applicants Table -->
+                        <div class="card admin-table">
+                            <div class="card-body">
+                                <h5 class="card-title mb-4">All Applicants (24)</h5>
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Position</th>
+                                                <th>Applied Date</th>
+                                                <th>Experience</th>
+                                                <th>Status</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                                            JD
+                                                        </div>
+                                                        <div>
+                                                            <strong>John Doe</strong>
+                                                            <p class="small text-muted mb-0">john.doe@email.com</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>Senior Frontend Developer</td>
+                                                <td>2023-10-15</td>
+                                                <td>5 years</td>
+                                                <td><span class="status-badge status-pending">Pending Review</span></td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-outline-primary me-2">View</button>
+                                                    <button class="btn btn-sm btn-outline-success">Shortlist</button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                                            SJ
+                                                        </div>
+                                                        <div>
+                                                            <strong>Sarah Johnson</strong>
+                                                            <p class="small text-muted mb-0">sarah.j@email.com</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>Marketing Manager</td>
+                                                <td>2023-10-14</td>
+                                                <td>7 years</td>
+                                                <td><span class="status-badge status-shortlisted">Shortlisted</span></td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-outline-primary me-2">View</button>
+                                                    <button class="btn btn-sm btn-outline-success">Schedule Interview</button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="rounded-circle bg-warning text-white d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                                            MB
+                                                        </div>
+                                                        <div>
+                                                            <strong>Michael Brown</strong>
+                                                            <p class="small text-muted mb-0">michael.b@email.com</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>Backend Developer</td>
+                                                <td>2023-10-13</td>
+                                                <td>3 years</td>
+                                                <td><span class="status-badge status-hired">Hired</span></td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-outline-primary me-2">View</button>
+                                                    <button class="btn btn-sm btn-outline-secondary">View Offer</button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="rounded-circle bg-danger text-white d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                                            ED
+                                                        </div>
+                                                        <div>
+                                                            <strong>Emily Davis</strong>
+                                                            <p class="small text-muted mb-0">emily.d@email.com</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>Full Stack Developer</td>
+                                                <td>2023-10-12</td>
+                                                <td>2 years</td>
+                                                <td><span class="status-badge status-rejected">Rejected</span></td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-outline-primary me-2">View</button>
+                                                    <button class="btn btn-sm btn-outline-info">Reconsider</button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="rounded-circle bg-info text-white d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                                            RW
+                                                        </div>
+                                                        <div>
+                                                            <strong>Robert Wilson</strong>
+                                                            <p class="small text-muted mb-0">robert.w@email.com</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>UX Designer</td>
+                                                <td>2023-10-11</td>
+                                                <td>4 years</td>
+                                                <td><span class="status-badge status-pending">Pending Review</span></td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-outline-primary me-2">View</button>
+                                                    <button class="btn btn-sm btn-outline-success">Shortlist</button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                
+                                <!-- Pagination -->
+                                <nav aria-label="Applicant pagination" class="mt-4">
+                                    <ul class="pagination justify-content-center">
+                                        <li class="page-item disabled">
+                                            <a class="page-link" href="#" tabindex="-1">Previous</a>
+                                        </li>
+                                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                        <li class="page-item">
+                                            <a class="page-link" href="#">Next</a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                        
+                        <!-- Bulk Actions -->
+                        <div class="card mt-3">
+                            <div class="card-body">
+                                <h6 class="card-title mb-3">Bulk Actions</h6>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-envelope me-1"></i> Send Email
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-success">
+                                        <i class="fas fa-check-circle me-1"></i> Shortlist Selected
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-warning">
+                                        <i class="fas fa-file-export me-1"></i> Export to CSV
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger">
+                                        <i class="fas fa-times-circle me-1"></i> Reject Selected
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Jobs Section -->
+                    <div id="jobs-section" class="admin-section" style="display: none;">
+                        <h2 class="mb-4">Job Postings Management</h2>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                    <input type="text" class="form-control" placeholder="Search job postings..." id="job-search">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <button class="btn btn-primary w-100" id="create-new-job">
+                                    <i class="fas fa-plus-circle me-2"></i> Create New Job Posting
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Active Jobs -->
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title mb-4">Active Job Postings (5)</h5>
+                                <div class="row">
+                                    <div class="col-md-6 mb-4">
+                                        <div class="card h-100">
+                                            <div class="card-body">
+                                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                                    <div>
+                                                        <h5 class="mb-1">Senior Frontend Developer</h5>
+                                                        <p class="text-muted small mb-0"><i class="fas fa-map-marker-alt me-1"></i> Remote</p>
+                                                    </div>
+                                                    <span class="badge bg-success">Active</span>
+                                                </div>
+                                                <p class="text-muted mb-3">Looking for an experienced frontend developer with React expertise...</p>
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div>
+                                                        <span class="badge bg-primary me-2">Full-time</span>
+                                                        <span class="text-muted small">$80K - $100K</span>
+                                                    </div>
+                                                    <div class="d-flex gap-1">
+                                                        <button class="btn btn-sm btn-outline-primary">View</button>
+                                                        <button class="btn btn-sm btn-outline-warning">Edit</button>
+                                                        <button class="btn btn-sm btn-outline-danger">Close</button>
+                                                    </div>
+                                                </div>
+                                                <div class="mt-3">
+                                                    <small class="text-muted"><i class="fas fa-users me-1"></i> 12 Applicants</small>
+                                                    <small class="text-muted ms-3"><i class="fas fa-clock me-1"></i> Posted: 5 days ago</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-4">
+                                        <div class="card h-100">
+                                            <div class="card-body">
+                                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                                    <div>
+                                                        <h5 class="mb-1">Marketing Manager</h5>
+                                                        <p class="text-muted small mb-0"><i class="fas fa-map-marker-alt me-1"></i> New York, NY</p>
+                                                    </div>
+                                                    <span class="badge bg-success">Active</span>
+                                                </div>
+                                                <p class="text-muted mb-3">Lead our marketing team and drive growth strategies...</p>
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div>
+                                                        <span class="badge bg-primary me-2">Full-time</span>
+                                                        <span class="text-muted small">$90K - $120K</span>
+                                                    </div>
+                                                    <div class="d-flex gap-1">
+                                                        <button class="btn btn-sm btn-outline-primary">View</button>
+                                                        <button class="btn btn-sm btn-outline-warning">Edit</button>
+                                                        <button class="btn btn-sm btn-outline-danger">Close</button>
+                                                    </div>
+                                                </div>
+                                                <div class="mt-3">
+                                                    <small class="text-muted"><i class="fas fa-users me-1"></i> 8 Applicants</small>
+                                                    <small class="text-muted ms-3"><i class="fas fa-clock me-1"></i> Posted: 10 days ago</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-4">
+                                        <div class="card h-100">
+                                            <div class="card-body">
+                                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                                    <div>
+                                                        <h5 class="mb-1">Backend Developer</h5>
+                                                        <p class="text-muted small mb-0"><i class="fas fa-map-marker-alt me-1"></i> Remote</p>
+                                                    </div>
+                                                    <span class="badge bg-success">Active</span>
+                                                </div>
+                                                <p class="text-muted mb-3">Node.js and Python developer for our API development...</p>
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div>
+                                                        <span class="badge bg-primary me-2">Full-time</span>
+                                                        <span class="text-muted small">$75K - $95K</span>
+                                                    </div>
+                                                    <div class="d-flex gap-1">
+                                                        <button class="btn btn-sm btn-outline-primary">View</button>
+                                                        <button class="btn btn-sm btn-outline-warning">Edit</button>
+                                                        <button class="btn btn-sm btn-outline-danger">Close</button>
+                                                    </div>
+                                                </div>
+                                                <div class="mt-3">
+                                                    <small class="text-muted"><i class="fas fa-users me-1"></i> 15 Applicants</small>
+                                                    <small class="text-muted ms-3"><i class="fas fa-clock me-1"></i> Posted: 7 days ago</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-4">
+                                        <div class="card h-100">
+                                            <div class="card-body">
+                                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                                    <div>
+                                                        <h5 class="mb-1">UX Designer</h5>
+                                                        <p class="text-muted small mb-0"><i class="fas fa-map-marker-alt me-1"></i> San Francisco, CA</p>
+                                                    </div>
+                                                    <span class="badge bg-success">Active</span>
+                                                </div>
+                                                <p class="text-muted mb-3">Create amazing user experiences for our products...</p>
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div>
+                                                        <span class="badge bg-primary me-2">Contract</span>
+                                                        <span class="text-muted small">$60K - $80K</span>
+                                                    </div>
+                                                    <div class="d-flex gap-1">
+                                                        <button class="btn btn-sm btn-outline-primary">View</button>
+                                                        <button class="btn btn-sm btn-outline-warning">Edit</button>
+                                                        <button class="btn btn-sm btn-outline-danger">Close</button>
+                                                    </div>
+                                                </div>
+                                                <div class="mt-3">
+                                                    <small class="text-muted"><i class="fas fa-users me-1"></i> 6 Applicants</small>
+                                                    <small class="text-muted ms-3"><i class="fas fa-clock me-1"></i> Posted: 3 days ago</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Drafts and Closed Jobs -->
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title mb-3">Draft Jobs (2)</h5>
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <h6 class="mb-1">Data Analyst</h6>
+                                                    <small class="text-muted">Last edited: Yesterday</small>
+                                                </div>
+                                                <div class="d-flex gap-1">
+                                                    <button class="btn btn-sm btn-outline-primary">Edit</button>
+                                                    <button class="btn btn-sm btn-outline-success">Publish</button>
+                                                </div>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <h6 class="mb-1">DevOps Engineer</h6>
+                                                    <small class="text-muted">Last edited: 3 days ago</small>
+                                                </div>
+                                                <div class="d-flex gap-1">
+                                                    <button class="btn btn-sm btn-outline-primary">Edit</button>
+                                                    <button class="btn btn-sm btn-outline-success">Publish</button>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title mb-3">Closed Jobs (3)</h5>
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <h6 class="mb-1">Product Manager</h6>
+                                                    <small class="text-muted">Closed: 2 weeks ago</small>
+                                                </div>
+                                                <button class="btn btn-sm btn-outline-info">View Archive</button>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <h6 class="mb-1">Sales Executive</h6>
+                                                    <small class="text-muted">Closed: 1 month ago</small>
+                                                </div>
+                                                <button class="btn btn-sm btn-outline-info">View Archive</button>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <h6 class="mb-1">Content Writer</h6>
+                                                    <small class="text-muted">Closed: 2 months ago</small>
+                                                </div>
+                                                <button class="btn btn-sm btn-outline-info">View Archive</button>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Job Performance Metrics -->
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title mb-3">Job Performance Metrics</h5>
+                                <div class="row">
+                                    <div class="col-md-3 mb-3">
+                                        <div class="analytics-card bg-primary text-white">
+                                            <div class="icon">
+                                                <i class="fas fa-eye"></i>
+                                            </div>
+                                            <h3>1,245</h3>
+                                            <p>Total Views</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <div class="analytics-card bg-success text-white">
+                                            <div class="icon">
+                                                <i class="fas fa-users"></i>
+                                            </div>
+                                            <h3>56</h3>
+                                            <p>Total Applications</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <div class="analytics-card bg-warning text-white">
+                                            <div class="icon">
+                                                <i class="fas fa-percentage"></i>
+                                            </div>
+                                            <h3>4.5%</h3>
+                                            <p>Conversion Rate</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <div class="analytics-card bg-info text-white">
+                                            <div class="icon">
+                                                <i class="fas fa-clock"></i>
+                                            </div>
+                                            <h3>12</h3>
+                                            <p>Avg. Days to Hire</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Analytics Section -->
+                    <div id="analytics-section" class="admin-section" style="display: none;">
+                        <h2 class="mb-4">Recruitment Analytics Dashboard</h2>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6 mb-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title mb-4">Application Status Distribution</h5>
+                                        <div class="chart-container">
+                                            <canvas id="applicationsByStatusChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title mb-4">Applications by Job Category</h5>
+                                        <div class="chart-container">
+                                            <canvas id="applicationsByCategoryChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-8 mb-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title mb-4">Monthly Hiring Trends</h5>
+                                        <div class="chart-container-large">
+                                            <canvas id="hiringTrendsChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title mb-4">Candidate Sources</h5>
+                                        <div class="chart-container-large">
+                                            <canvas id="candidateSourcesChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-4 mb-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title mb-4">Time to Hire by Department</h5>
+                                        <div class="chart-container">
+                                            <canvas id="timeToHireChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title mb-4">Experience Level Distribution</h5>
+                                        <div class="chart-container">
+                                            <canvas id="experienceLevelChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title mb-4">Interview to Offer Ratio</h5>
+                                        <div class="text-center my-4">
+                                            <div class="display-4 text-primary">42%</div>
+                                            <p class="text-muted">Successful Conversion Rate</p>
+                                        </div>
+                                        <div class="progress mb-3" style="height: 20px;">
+                                            <div class="progress-bar bg-success" style="width: 42%">42%</div>
+                                            <div class="progress-bar bg-secondary" style="width: 58%">58%</div>
+                                        </div>
+                                        <div class="row text-center">
+                                            <div class="col-6">
+                                                <h4 class="text-success">42%</h4>
+                                                <p class="small">Offers Made</p>
+                                            </div>
+                                            <div class="col-6">
+                                                <h4 class="text-secondary">58%</h4>
+                                                <p class="small">Not Selected</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-8">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title mb-4">Top Performing Job Postings</h5>
+                                        <div class="table-responsive">
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Job Title</th>
+                                                        <th>Applications</th>
+                                                        <th>Views</th>
+                                                        <th>Conversion Rate</th>
+                                                        <th>Quality Score</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>Senior Frontend Developer</td>
+                                                        <td>24</td>
+                                                        <td>1,245</td>
+                                                        <td>1.9%</td>
+                                                        <td><span class="badge bg-success">8.7/10</span></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Marketing Manager</td>
+                                                        <td>18</td>
+                                                        <td>980</td>
+                                                        <td>1.8%</td>
+                                                        <td><span class="badge bg-success">8.2/10</span></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Backend Developer</td>
+                                                        <td>32</td>
+                                                        <td>1,560</td>
+                                                        <td>2.1%</td>
+                                                        <td><span class="badge bg-warning">7.5/10</span></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>UX Designer</td>
+                                                        <td>15</td>
+                                                        <td>720</td>
+                                                        <td>2.1%</td>
+                                                        <td><span class="badge bg-success">8.9/10</span></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Data Analyst</td>
+                                                        <td>28</td>
+                                                        <td>1,340</td>
+                                                        <td>2.1%</td>
+                                                        <td><span class="badge bg-success">8.4/10</span></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title mb-4">Recruitment Metrics</h5>
+                                        <div class="mb-4">
+                                            <h6>Average Time to Hire</h6>
+                                            <div class="progress mb-2" style="height: 10px;">
+                                                <div class="progress-bar bg-primary" style="width: 65%"></div>
+                                            </div>
+                                            <p class="small text-muted">12 days (Industry avg: 18 days)</p>
+                                        </div>
+                                        <div class="mb-4">
+                                            <h6>Cost Per Hire</h6>
+                                            <div class="progress mb-2" style="height: 10px;">
+                                                <div class="progress-bar bg-success" style="width: 45%"></div>
+                                            </div>
+                                            <p class="small text-muted">$2,450 (Industry avg: $4,000)</p>
+                                        </div>
+                                        <div class="mb-4">
+                                            <h6>Candidate Satisfaction</h6>
+                                            <div class="progress mb-2" style="height: 10px;">
+                                                <div class="progress-bar bg-warning" style="width: 85%"></div>
+                                            </div>
+                                            <p class="small text-muted">4.8/5 (Based on 156 reviews)</p>
+                                        </div>
+                                        <div class="mb-4">
+                                            <h6>Offer Acceptance Rate</h6>
+                                            <div class="progress mb-2" style="height: 10px;">
+                                                <div class="progress-bar bg-info" style="width: 68%"></div>
+                                            </div>
+                                            <p class="small text-muted">68% (Industry avg: 55%)</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Key Performance Indicators -->
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title mb-4">Key Performance Indicators</h5>
+                                <div class="row">
+                                    <div class="col-md-3 mb-3">
+                                        <div class="analytics-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                                            <div class="icon">
+                                                <i class="fas fa-bullseye"></i>
+                                            </div>
+                                            <h3>87%</h3>
+                                            <p>Quality of Hire</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <div class="analytics-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">
+                                            <div class="icon">
+                                                <i class="fas fa-user-check"></i>
+                                            </div>
+                                            <h3>92%</h3>
+                                            <p>Retention Rate (1yr)</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <div class="analytics-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white;">
+                                            <div class="icon">
+                                                <i class="fas fa-chart-line"></i>
+                                            </div>
+                                            <h3>24%</h3>
+                                            <p>Growth in Applicants</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <div class="analytics-card" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white;">
+                                            <div class="icon">
+                                                <i class="fas fa-award"></i>
+                                            </div>
+                                            <h3>9.1/10</h3>
+                                            <p>Employer Brand Score</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Export Options -->
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title mb-3">Export Analytics Data</h5>
+                                <div class="d-flex gap-2 flex-wrap">
+                                    <button class="btn btn-outline-primary">
+                                        <i class="fas fa-file-excel me-2"></i> Export to Excel
+                                    </button>
+                                    <button class="btn btn-outline-success">
+                                        <i class="fas fa-file-pdf me-2"></i> Export to PDF
+                                    </button>
+                                    <button class="btn btn-outline-warning">
+                                        <i class="fas fa-chart-bar me-2"></i> Generate Full Report
+                                    </button>
+                                    <button class="btn btn-outline-info">
+                                        <i class="fas fa-share-alt me-2"></i> Share Dashboard
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Settings Section -->
+                    <div id="settings-section" class="admin-section" style="display: none;">
+                        <h2 class="mb-4">System Settings</h2>
+                        
+                        <!-- Company Settings -->
+                        <div class="settings-section">
+                            <h5><i class="fas fa-building me-2"></i> Company Settings</h5>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Company Name</label>
+                                    <input type="text" class="form-control" value="TechCorp Inc.">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Company Logo</label>
+                                    <input type="file" class="form-control" accept="image/*">
+                                    <small class="text-muted">Recommended: 200x200px, PNG or JPG</small>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Primary Contact Email</label>
+                                    <input type="email" class="form-control" value="hr@techcorp.com">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Contact Phone</label>
+                                    <input type="tel" class="form-control" value="+1 (555) 123-4567">
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Company Address</label>
+                                <textarea class="form-control" rows="2">123 Business Ave, Suite 100, San Francisco, CA 94107</textarea>
+                            </div>
+                            <button class="btn btn-primary">Update Company Info</button>
+                        </div>
+                        
+                        <!-- Notification Settings -->
+                        <div class="settings-section">
+                            <h5><i class="fas fa-bell me-2"></i> Notification Settings</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" id="notify-new-applicant" checked>
+                                        <label class="form-check-label" for="notify-new-applicant">
+                                            New applicant notifications
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" id="notify-status-change" checked>
+                                        <label class="form-check-label" for="notify-status-change">
+                                            Application status changes
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" id="notify-interview" checked>
+                                        <label class="form-check-label" for="notify-interview">
+                                            Interview schedule updates
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" id="notify-daily-digest" checked>
+                                        <label class="form-check-label" for="notify-daily-digest">
+                                            Daily digest emails
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" id="notify-weekly-report">
+                                        <label class="form-check-label" for="notify-weekly-report">
+                                            Weekly recruitment reports
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" id="notify-system-updates" checked>
+                                        <label class="form-check-label" for="notify-system-updates">
+                                            System updates and maintenance
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Notification Frequency</label>
+                                <select class="form-select">
+                                    <option value="instant">Instant</option>
+                                    <option value="hourly" selected>Hourly Digest</option>
+                                    <option value="daily">Daily Digest</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary">Save Notification Settings</button>
+                        </div>
+                        
+                        <!-- User Management -->
+                        <div class="settings-section">
+                            <h5><i class="fas fa-users me-2"></i> User Management</h5>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>User</th>
+                                            <th>Role</th>
+                                            <th>Last Active</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3" style="width: 35px; height: 35px;">
+                                                        JD
+                                                    </div>
+                                                    <div>
+                                                        <strong>John Doe</strong>
+                                                        <p class="small text-muted mb-0">john.doe@techcorp.com</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td><span class="badge bg-primary">Administrator</span></td>
+                                            <td>2 hours ago</td>
+                                            <td><span class="badge bg-success">Active</span></td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-primary me-1">Edit</button>
+                                                <button class="btn btn-sm btn-outline-danger">Remove</button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center me-3" style="width: 35px; height: 35px;">
+                                                        SJ
+                                                    </div>
+                                                    <div>
+                                                        <strong>Sarah Johnson</strong>
+                                                        <p class="small text-muted mb-0">sarah.j@techcorp.com</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td><span class="badge bg-success">Recruiter</span></td>
+                                            <td>Yesterday</td>
+                                            <td><span class="badge bg-success">Active</span></td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-primary me-1">Edit</button>
+                                                <button class="btn btn-sm btn-outline-danger">Remove</button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="rounded-circle bg-warning text-white d-flex align-items-center justify-content-center me-3" style="width: 35px; height: 35px;">
+                                                        MB
+                                                    </div>
+                                                    <div>
+                                                        <strong>Michael Brown</strong>
+                                                        <p class="small text-muted mb-0">michael.b@techcorp.com</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td><span class="badge bg-warning">Hiring Manager</span></td>
+                                            <td>1 week ago</td>
+                                            <td><span class="badge bg-warning">Pending</span></td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-primary me-1">Edit</button>
+                                                <button class="btn btn-sm btn-outline-danger">Remove</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <button class="btn btn-success mt-2">
+                                <i class="fas fa-user-plus me-2"></i> Add New User
+                            </button>
+                        </div>
+                        
+                        <!-- System Settings -->
+                        <div class="settings-section">
+                            <h5><i class="fas fa-cogs me-2"></i> System Settings</h5>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Application Auto-Archive Period</label>
+                                    <select class="form-select">
+                                        <option value="30">30 days</option>
+                                        <option value="60" selected>60 days</option>
+                                        <option value="90">90 days</option>
+                                        <option value="180">180 days</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Default Timezone</label>
+                                    <select class="form-select">
+                                        <option value="est">Eastern Time (EST)</option>
+                                        <option value="cst">Central Time (CST)</option>
+                                        <option value="pst" selected>Pacific Time (PST)</option>
+                                        <option value="gmt">GMT</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Maximum File Upload Size</label>
+                                    <select class="form-select">
+                                        <option value="5">5 MB</option>
+                                        <option value="10" selected>10 MB</option>
+                                        <option value="25">25 MB</option>
+                                        <option value="50">50 MB</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Default Currency</label>
+                                    <select class="form-select">
+                                        <option value="USD" selected>US Dollar (USD)</option>
+                                        <option value="EUR">Euro (EUR)</option>
+                                        <option value="GBP">British Pound (GBP)</option>
+                                        <option value="JPY">Japanese Yen (JPY)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Allowed File Types for Resume</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="file-pdf" checked>
+                                    <label class="form-check-label" for="file-pdf">PDF (.pdf)</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="file-doc" checked>
+                                    <label class="form-check-label" for="file-doc">Microsoft Word (.doc, .docx)</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="file-txt">
+                                    <label class="form-check-label" for="file-txt">Text File (.txt)</label>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary">Save System Settings</button>
+                        </div>
+                        
+                        <!-- Danger Zone -->
+                        <div class="settings-section border-danger">
+                            <h5 class="text-danger"><i class="fas fa-exclamation-triangle me-2"></i> Danger Zone</h5>
+                            <div class="alert alert-danger">
+                                <h6 class="alert-heading">Warning: Irreversible Actions</h6>
+                                <p class="mb-3">These actions cannot be undone. Please proceed with caution.</p>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-outline-danger">
+                                        <i class="fas fa-trash me-2"></i> Delete All Test Data
+                                    </button>
+                                    <button class="btn btn-outline-danger">
+                                        <i class="fas fa-archive me-2"></i> Archive All Applications
+                                    </button>
+                                    <button class="btn btn-danger">
+                                        <i class="fas fa-power-off me-2"></i> Deactivate Account
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- First Time Login Alert -->
+    <div class="first-login-alert" id="first-login-alert">
+        <div class="text-center mb-3">
+            <i class="fas fa-exclamation-triangle fa-3x text-warning"></i>
+        </div>
+        <h4 class="text-center mb-3">First Time Login Detected</h4>
+        <p class="text-center mb-3">This username/email was not found in our system. Please check your credentials or sign up for a new account.</p>
+        <div class="d-grid gap-2">
+            <button type="button" class="btn btn-primary" id="close-first-login-alert">
+                <i class="fas fa-check me-1"></i> I Understand
+            </button>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <h5><i class="fas fa-briefcase me-2"></i>JobConnect</h5>
+                    <p class="small">Streamlining recruitment with our advanced Applicant Tracking System.</p>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-light text-decoration-none">Home</a></li>
+                        <li><a href="#" class="text-light text-decoration-none">Employer Portal</a></li>
+                        <li><a href="#" class="text-light text-decoration-none">Candidate Portal</a></li>
+                        <li><a href="#" class="text-light text-decoration-none">Pricing</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <h5>Contact Us</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-envelope me-2"></i> itcompany18@gamil.com</li>
+                        <li><i class="fas fa-phone me-2"></i> +91 8860253091/li>
+                        <li><i class="fas fa-map-marker-alt me-2"></i> 123 Business Ave, Suite 100</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="bg-light">
+            <div class="text-center small">
+                <p>&copy; 2023 JobConnect. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script>
+        // Global state
+        const state = {
+            currentPage: 'login-page',
+            selectedJobCategory: null,
+            jobData: null,
+            applicationData: null,
+            adminData: {
+                totalApplicants: 24,
+                activeJobs: 5,
+                pendingReview: 8,
+                rejected: 3
+            },
+            otpVerified: false,
+            firstTimeLoginChecked: false,
+            employerProfile: {
+                name: '',
+                experienceLevel: '',
+                company: '',
+                yearsExperience: '',
+                previousCompany: '',
+                email: '',
+                phone: ''
+            },
+            passwordValid: false,
+            generatedOTP: null
+        };
+
+        // DOM elements
+        const pages = {
+            login: document.getElementById('login-page'),
+            jobPosting: document.getElementById('job-posting-page'),
+            application: document.getElementById('application-page'),
+            admin: document.getElementById('admin-page')
+        };
+
+        const progressContainer = document.getElementById('progress-container');
+        const steps = {
+            step1: document.getElementById('step-1'),
+            step2: document.getElementById('step-2'),
+            step3: document.getElementById('step-3'),
+            step4: document.getElementById('step-4')
+        };
+
+        // Notification system
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'exclamation-triangle'} me-3"></i>
+                <div>${message}</div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Remove notification after animation
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 3500);
+        }
+
+        // OTP Functions
+        let otpTimer;
+        let timeLeft = 300; // 5 minutes in seconds
+
+        function startOTPTimer() {
+            clearInterval(otpTimer);
+            timeLeft = 300;
+            updateTimerDisplay();
+            
+            otpTimer = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                
+                if (timeLeft <= 0) {
+                    clearInterval(otpTimer);
+                    showNotification('OTP has expired. Please request a new one.', 'error');
+                    document.getElementById('signup-submit-btn').disabled = true;
+                    document.getElementById('otp-verified-text').style.display = 'none';
+                    state.otpVerified = false;
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('timer').textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function generateOTP() {
+            // Generate a 6-digit OTP
+            return Math.floor(100000 + Math.random() * 900000).toString();
+        }
+
+        // First time login check
+        function checkFirstTimeLogin(email) {
+            // This is a simulation - in real app, you would check against your database
+            const existingUsers = ['admin@jobconnect.com', 'hr@techcorp.com', 'recruiter@example.com'];
+            
+            if (!existingUsers.includes(email.toLowerCase()) && !state.firstTimeLoginChecked) {
+                // Show first time login alert
+                document.getElementById('first-login-alert').classList.add('show');
+                state.firstTimeLoginChecked = true;
+                return true;
+            }
+            return false;
+        }
+
+        // Page navigation
+        function navigateTo(pageId) {
+            // Hide all pages
+            Object.values(pages).forEach(page => {
+                page.classList.remove('active-page');
+            });
+            
+            // Show the target page
+            document.getElementById(pageId).classList.add('active-page');
+            
+            // Update progress steps
+            updateProgressSteps(pageId);
+            
+            // Update current page in state
+            state.currentPage = pageId;
+        }
+
+        // Update progress steps
+        function updateProgressSteps(pageId) {
+            // Show progress container for all pages except login
+            if (pageId === 'login-page') {
+                progressContainer.style.display = 'none';
+                return;
+            }
+            
+            progressContainer.style.display = 'block';
+            
+            // Reset all steps
+            Object.values(steps).forEach(step => {
+                step.classList.remove('active', 'completed');
+            });
+            
+            // Update steps based on current page
+            switch(pageId) {
+                case 'job-posting-page':
+                    steps.step1.classList.add('completed');
+                    steps.step2.classList.add('active');
+                    break;
+                case 'application-page':
+                    steps.step1.classList.add('completed');
+                    steps.step2.classList.add('completed');
+                    steps.step3.classList.add('active');
+                    break;
+                case 'admin-page':
+                    steps.step1.classList.add('completed');
+                    steps.step2.classList.add('completed');
+                    steps.step3.classList.add('completed');
+                    steps.step4.classList.add('active');
+                    break;
+            }
+        }
+
+        // Password validation
+        function validatePassword(password) {
+            const rules = {
+                length: password.length >= 8,
+                uppercase: /[A-Z]/.test(password),
+                lowercase: /[a-z]/.test(password),
+                number: /[0-9]/.test(password),
+                special: /[!@#$%^&*]/.test(password)
+            };
+            
+            // Update UI for each rule
+            Object.keys(rules).forEach(rule => {
+                const element = document.getElementById(`rule-${rule}`);
+                if (rules[rule]) {
+                    element.classList.remove('rule-invalid');
+                    element.classList.add('rule-valid');
+                } else {
+                    element.classList.remove('rule-valid');
+                    element.classList.add('rule-invalid');
+                }
+            });
+            
+            // Check if all rules are met
+            const allValid = Object.values(rules).every(rule => rule);
+            state.passwordValid = allValid;
+            
+            return allValid;
+        }
+
+        // Check password match
+        function checkPasswordMatch() {
+            const password = document.getElementById('signup-password').value;
+            const confirmPassword = document.getElementById('signup-confirm-password').value;
+            const errorElement = document.getElementById('password-match-error');
+            
+            if (confirmPassword && password !== confirmPassword) {
+                errorElement.style.display = 'block';
+                return false;
+            } else {
+                errorElement.style.display = 'none';
+                return true;
+            }
+        }
+
+        // Initialize analytics charts
+        function initAnalyticsCharts() {
+            // Applications by Status Chart (Doughnut)
+            const statusCtx = document.getElementById('applicationsByStatusChart').getContext('2d');
+            new Chart(statusCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Pending Review', 'Shortlisted', 'Rejected', 'Hired', 'Interview Scheduled'],
+                    datasets: [{
+                        data: [24, 18, 12, 8, 15],
+                        backgroundColor: [
+                            '#f59e0b',
+                            '#10b981',
+                            '#ef4444',
+                            '#3b82f6',
+                            '#8b5cf6'
+                        ],
+                        borderWidth: 1,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = Math.round((value / total) * 100);
+                                    return `${label}: ${value} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Applications by Category Chart (Bar)
+            const categoryCtx = document.getElementById('applicationsByCategoryChart').getContext('2d');
+            new Chart(categoryCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Technology', 'Marketing', 'Sales', 'Finance', 'HR', 'Operations'],
+                    datasets: [{
+                        label: 'Number of Applications',
+                        data: [45, 28, 22, 18, 15, 12],
+                        backgroundColor: [
+                            'rgba(37, 99, 235, 0.7)',
+                            'rgba(16, 185, 129, 0.7)',
+                            'rgba(245, 158, 11, 0.7)',
+                            'rgba(139, 92, 246, 0.7)',
+                            'rgba(239, 68, 68, 0.7)',
+                            'rgba(100, 116, 139, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgb(37, 99, 235)',
+                            'rgb(16, 185, 129)',
+                            'rgb(245, 158, 11)',
+                            'rgb(139, 92, 246)',
+                            'rgb(239, 68, 68)',
+                            'rgb(100, 116, 139)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Number of Applications'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Job Category'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+
+            // Hiring Trends Chart (Bar)
+            const trendsCtx = document.getElementById('hiringTrendsChart').getContext('2d');
+            new Chart(trendsCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: [
+                        {
+                            label: 'Applications Received',
+                            data: [120, 150, 180, 210, 240, 280, 300, 290, 270, 250, 230, 200],
+                            backgroundColor: 'rgba(37, 99, 235, 0.7)',
+                            borderColor: 'rgb(37, 99, 235)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Hires',
+                            data: [8, 10, 12, 15, 18, 22, 25, 24, 20, 18, 16, 14],
+                            backgroundColor: 'rgba(16, 185, 129, 0.7)',
+                            borderColor: 'rgb(16, 185, 129)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Number of Applications/Hires'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Month'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    }
+                }
+            });
+
+            // Candidate Sources Chart (Pie)
+            const sourcesCtx = document.getElementById('candidateSourcesChart').getContext('2d');
+            new Chart(sourcesCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['LinkedIn', 'Company Website', 'Job Boards', 'Referrals', 'Campus Recruitment', 'Social Media'],
+                    datasets: [{
+                        data: [35, 25, 20, 12, 5, 3],
+                        backgroundColor: [
+                            '#0077b5',
+                            '#2563eb',
+                            '#f59e0b',
+                            '#10b981',
+                            '#8b5cf6',
+                            '#ec4899'
+                        ],
+                        borderWidth: 1,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                        }
+                    }
+                }
+            });
+
+            // Time to Hire by Department Chart (Horizontal Bar)
+            const timeCtx = document.getElementById('timeToHireChart').getContext('2d');
+            new Chart(timeCtx, {
+                type: 'horizontalBar',
+                data: {
+                    labels: ['Technology', 'Marketing', 'Sales', 'Finance', 'HR'],
+                    datasets: [{
+                        label: 'Average Days to Hire',
+                        data: [14, 10, 8, 12, 9],
+                        backgroundColor: [
+                            'rgba(37, 99, 235, 0.7)',
+                            'rgba(16, 185, 129, 0.7)',
+                            'rgba(245, 158, 11, 0.7)',
+                            'rgba(139, 92, 246, 0.7)',
+                            'rgba(239, 68, 68, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgb(37, 99, 235)',
+                            'rgb(16, 185, 129)',
+                            'rgb(245, 158, 11)',
+                            'rgb(139, 92, 246)',
+                            'rgb(239, 68, 68)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Days'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Department'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+
+            // Experience Level Chart (Polar Area)
+            const experienceCtx = document.getElementById('experienceLevelChart').getContext('2d');
+            new Chart(experienceCtx, {
+                type: 'polarArea',
+                data: {
+                    labels: ['Fresher (0-1 yrs)', 'Junior (1-3 yrs)', 'Mid-Level (3-7 yrs)', 'Senior (7-10 yrs)', 'Executive (10+ yrs)'],
+                    datasets: [{
+                        data: [15, 35, 30, 15, 5],
+                        backgroundColor: [
+                            'rgba(37, 99, 235, 0.7)',
+                            'rgba(16, 185, 129, 0.7)',
+                            'rgba(245, 158, 11, 0.7)',
+                            'rgba(139, 92, 246, 0.7)',
+                            'rgba(239, 68, 68, 0.7)'
+                        ],
+                        borderWidth: 1,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                        }
+                    },
+                    scales: {
+                        r: {
+                            ticks: {
+                                display: false
+                            },
+                            title: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialize the application
+        function init() {
+            // Login form submission
+            document.getElementById('login-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const email = document.getElementById('login-email').value;
+                
+                // Check if this is first time login
+                if (checkFirstTimeLogin(email)) {
+                    return;
+                }
+                
+                // Show success notification
+                showNotification(`Successfully logged in as ${email}`, 'success');
+                
+                // Update current user display
+                document.getElementById('current-user').textContent = `Logged in as ${email}`;
+                
+                // Navigate to job posting page
+                setTimeout(() => {
+                    navigateTo('job-posting-page');
+                }, 1000);
+            });
+            
+            // Close first time login alert
+            document.getElementById('close-first-login-alert').addEventListener('click', function() {
+                document.getElementById('first-login-alert').classList.remove('show');
+            });
+            
+            // Experience level selection
+            document.querySelectorAll('.experience-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    // Remove selected class from all options
+                    document.querySelectorAll('.experience-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    
+                    // Add selected class to clicked option
+                    this.classList.add('selected');
+                    
+                    const level = this.getAttribute('data-level');
+                    state.employerProfile.experienceLevel = level;
+                    
+                    // Show/hide relevant sections
+                    const companySection = document.getElementById('company-name-section');
+                    const experienceSection = document.getElementById('experience-details-section');
+                    
+                    if (level === 'experienced') {
+                        companySection.style.display = 'block';
+                        experienceSection.style.display = 'block';
+                        document.getElementById('signup-company').required = true;
+                    } else {
+                        companySection.style.display = 'none';
+                        experienceSection.style.display = 'none';
+                        document.getElementById('signup-company').required = false;
+                    }
+                });
+            });
+            
+            // Send OTP button
+            document.getElementById('send-otp-btn').addEventListener('click', function() {
+                const phone = document.getElementById('signup-phone').value;
+                
+                if (!phone) {
+                    showNotification('Please enter your phone number', 'error');
+                    return;
+                }
+                
+                // Generate and simulate sending OTP
+                const otp = generateOTP();
+                state.generatedOTP = otp; // Store for verification
+                
+                // Show OTP section
+                document.getElementById('otp-section').style.display = 'block';
+                document.getElementById('signup-otp').value = '';
+                document.getElementById('otp-verified-text').style.display = 'none';
+                
+                // Start OTP timer
+                startOTPTimer();
+                
+                // Show notification (in real app, OTP would be sent via SMS)
+                showNotification(`OTP ${otp} has been sent to ${phone}. For demo, use this OTP to verify.`, 'success');
+            });
+            
+            // Verify OTP button
+            document.getElementById('verify-otp-btn').addEventListener('click', function() {
+                const enteredOTP = document.getElementById('signup-otp').value;
+                
+                if (!enteredOTP) {
+                    showNotification('Please enter the OTP', 'error');
+                    return;
+                }
+                
+                if (state.generatedOTP && enteredOTP === state.generatedOTP) {
+                    state.otpVerified = true;
+                    // Enable signup button only if password is valid
+                    document.getElementById('signup-submit-btn').disabled = !state.passwordValid;
+                    clearInterval(otpTimer);
+                    showNotification('Phone number verified successfully!', 'success');
+                    document.getElementById('otp-verified-text').style.display = 'block';
+                    document.getElementById('otp-timer').style.display = 'none';
+                } else {
+                    showNotification('Invalid OTP. Please try again.', 'error');
+                    state.otpVerified = false;
+                }
+            });
+            
+            // Password validation on input
+            document.getElementById('signup-password').addEventListener('input', function() {
+                validatePassword(this.value);
+                checkPasswordMatch();
+                
+                // Enable/disable signup button based on validation
+                if (state.otpVerified && state.passwordValid && checkPasswordMatch()) {
+                    document.getElementById('signup-submit-btn').disabled = false;
+                } else {
+                    document.getElementById('signup-submit-btn').disabled = true;
+                }
+            });
+            
+            // Confirm password validation
+            document.getElementById('signup-confirm-password').addEventListener('input', function() {
+                checkPasswordMatch();
+                
+                // Enable/disable signup button based on validation
+                if (state.otpVerified && state.passwordValid && checkPasswordMatch()) {
+                    document.getElementById('signup-submit-btn').disabled = false;
+                } else {
+                    document.getElementById('signup-submit-btn').disabled = true;
+                }
+            });
+            
+            // Show password rules
+            document.getElementById('show-password-rules').addEventListener('click', function() {
+                const rulesElement = document.getElementById('password-rules');
+                rulesElement.classList.toggle('show');
+            });
+            
+            // Toggle password visibility
+            document.getElementById('toggle-password').addEventListener('click', function() {
+                const passwordField = document.getElementById('signup-password');
+                const type = passwordField.type === 'password' ? 'text' : 'password';
+                passwordField.type = type;
+                this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+            });
+            
+            // Toggle confirm password visibility
+            document.getElementById('toggle-confirm-password').addEventListener('click', function() {
+                const passwordField = document.getElementById('signup-confirm-password');
+                const type = passwordField.type === 'password' ? 'text' : 'password';
+                passwordField.type = type;
+                this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+            });
+            
+            // Signup form submission - FIXED THIS FUNCTION
+            document.getElementById('signup-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Check if OTP is verified
+                if (!state.otpVerified) {
+                    showNotification('Please verify your phone number with OTP first', 'error');
+                    return;
+                }
+                
+                // Check password validity
+                if (!state.passwordValid) {
+                    showNotification('Please ensure your password meets all requirements', 'error');
+                    return;
+                }
+                
+                // Check password match
+                if (!checkPasswordMatch()) {
+                    showNotification('Passwords do not match', 'error');
+                    return;
+                }
+                
+                const fname = document.getElementById('signup-fname').value;
+                const lname = document.getElementById('signup-lname').value;
+                const experienceLevel = state.employerProfile.experienceLevel;
+                const company = document.getElementById('signup-company').value;
+                const yearsExperience = document.getElementById('years-experience').value;
+                const previousCompany = document.getElementById('previous-company').value;
+                const phone = document.getElementById('signup-phone').value;
+                const email = document.getElementById('signup-email').value;
+                
+                // Store employer profile data
+                state.employerProfile = {
+                    name: `${fname} ${lname}`,
+                    experienceLevel: experienceLevel,
+                    company: company || 'Not applicable',
+                    yearsExperience: yearsExperience || '-',
+                    previousCompany: previousCompany || '-',
+                    email: email,
+                    phone: phone
+                };
+                
+                // Show success notification
+                showNotification(`Account created for ${fname}! Please login to continue.`, 'success');
+                
+                // Switch to login tab
+                document.getElementById('login-tab').click();
+                
+                // Pre-fill login email
+                document.getElementById('login-email').value = email;
+                
+                // Reset signup form
+                this.reset();
+                state.otpVerified = false;
+                state.generatedOTP = null;
+                document.getElementById('otp-section').style.display = 'none';
+                document.getElementById('company-name-section').style.display = 'none';
+                document.getElementById('experience-details-section').style.display = 'none';
+                document.getElementById('password-rules').classList.remove('show');
+                document.getElementById('otp-verified-text').style.display = 'none';
+                document.getElementById('otp-timer').style.display = 'block';
+                state.passwordValid = false;
+                
+                // Reset experience selection
+                document.querySelectorAll('.experience-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                
+                // Reset password validation UI
+                document.querySelectorAll('.password-rules li').forEach(li => {
+                    li.classList.remove('rule-valid');
+                    li.classList.add('rule-invalid');
+                });
+                
+                // Disable signup button
+                document.getElementById('signup-submit-btn').disabled = true;
+                
+                // Clear OTP timer
+                clearInterval(otpTimer);
+            });
+            
+            // Profile icon click handler
+            document.getElementById('profile-icon').addEventListener('click', function(e) {
+                e.stopPropagation();
+                const profileDetails = document.getElementById('profile-details');
+                
+                // Update profile details with stored data
+                document.getElementById('profile-name').textContent = state.employerProfile.name;
+                document.getElementById('profile-experience').textContent = state.employerProfile.experienceLevel === 'experienced' ? 'Experienced' : 'Fresher';
+                document.getElementById('profile-company').textContent = state.employerProfile.company;
+                document.getElementById('profile-email').textContent = state.employerProfile.email;
+                document.getElementById('profile-phone').textContent = state.employerProfile.phone;
+                
+                // Show/hide experience details based on level
+                const experienceDetailsSection = document.getElementById('profile-experience-details-section');
+                const companySection = document.getElementById('profile-company-section');
+                
+                if (state.employerProfile.experienceLevel === 'experienced') {
+                    document.getElementById('profile-years').textContent = state.employerProfile.yearsExperience;
+                    document.getElementById('profile-previous-company').textContent = state.employerProfile.previousCompany;
+                    experienceDetailsSection.style.display = 'block';
+                    companySection.style.display = 'block';
+                } else {
+                    experienceDetailsSection.style.display = 'none';
+                    companySection.style.display = 'block';
+                }
+                
+                profileDetails.classList.toggle('show');
+            });
+            
+            // Close profile details when clicking outside
+            document.addEventListener('click', function() {
+                document.getElementById('profile-details').classList.remove('show');
+            });
+            
+            // Job category selection
+            document.querySelectorAll('.job-category-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    // Remove selected class from all cards
+                    document.querySelectorAll('.job-category-card').forEach(c => {
+                        c.classList.remove('selected');
+                    });
+                    
+                    // Add selected class to clicked card
+                    this.classList.add('selected');
+                    
+                    // Store selected category
+                    state.selectedJobCategory = this.getAttribute('data-category');
+                });
+            });
+            
+            // Job posting form submission
+            document.getElementById('job-posting-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Validate job category selection
+                if (!state.selectedJobCategory) {
+                    showNotification('Please select a job category', 'error');
+                    return;
+                }
+                
+                // Store job data
+                const currency = document.getElementById('job-currency').value;
+                const currencySymbol = {
+                    'USD': '$',
+                    'INR': '₹',
+                    'EUR': '€',
+                    'GBP': '£',
+                    'JPY': '¥',
+                    'AUD': 'A$',
+                    'CAD': 'C$'
+                }[currency];
+                
+                state.jobData = {
+                    title: document.getElementById('job-title').value,
+                    location: document.getElementById('job-location').value,
+                    type: document.getElementById('job-type').value,
+                    salary: `${currencySymbol} ${document.getElementById('job-salary').value}`,
+                    currency: currency,
+                    description: document.getElementById('job-description').value,
+                    requirements: document.getElementById('job-requirements').value,
+                    category: state.selectedJobCategory
+                };
+                
+                // Update application page with job details
+                document.getElementById('applied-job-title').textContent = state.jobData.title;
+                document.getElementById('applied-job-location').textContent = state.jobData.location;
+                document.getElementById('applied-job-type').textContent = state.jobData.type;
+                
+                // Show success notification
+                showNotification(`Job posting created: ${state.jobData.title}`, 'success');
+                
+                // Navigate to application page
+                setTimeout(() => {
+                    navigateTo('application-page');
+                }, 1000);
+            });
+            
+            // Resume upload functionality
+            const resumeUploadArea = document.getElementById('resume-upload-area');
+            const resumeFileInput = document.getElementById('resume-file');
+            const fileInfo = document.getElementById('file-info');
+            const fileName = document.getElementById('file-name');
+            const fileSize = document.getElementById('file-size');
+            const removeFileBtn = document.getElementById('remove-file');
+            
+            resumeUploadArea.addEventListener('click', () => {
+                resumeFileInput.click();
+            });
+            
+            resumeUploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                resumeUploadArea.classList.add('dragover');
+            });
+            
+            resumeUploadArea.addEventListener('dragleave', () => {
+                resumeUploadArea.classList.remove('dragover');
+            });
+            
+            resumeUploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                resumeUploadArea.classList.remove('dragover');
+                
+                if (e.dataTransfer.files.length) {
+                    handleFileSelection(e.dataTransfer.files[0]);
+                }
+            });
+            
+            resumeFileInput.addEventListener('change', (e) => {
+                if (e.target.files.length) {
+                    handleFileSelection(e.target.files[0]);
+                }
+            });
+            
+            function handleFileSelection(file) {
+                // Validate file type
+                const validTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+                if (!validTypes.includes(file.type)) {
+                    showNotification('Please upload a PDF, DOC or DOCX file', 'error');
+                    return;
+                }
+                
+                // Validate file size (5MB max)
+                if (file.size > 5 * 1024 * 1024) {
+                    showNotification('File size should be less than 5MB', 'error');
+                    return;
+                }
+                
+                // Display file info
+                fileName.textContent = file.name;
+                fileSize.textContent = `${(file.size / (1024 * 1024)).toFixed(1)} MB`;
+                fileInfo.style.display = 'block';
+                
+                // Store file in state
+                state.resumeFile = file;
+            }
+            
+            removeFileBtn.addEventListener('click', () => {
+                fileInfo.style.display = 'none';
+                resumeFileInput.value = '';
+                delete state.resumeFile;
+            });
+            
+            // Application form submission
+            document.getElementById('application-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Validate resume upload
+                if (!state.resumeFile) {
+                    showNotification('Please upload your resume', 'error');
+                    return;
+                }
+                
+                // Store application data
+                state.applicationData = {
+                    firstName: document.getElementById('candidate-fname').value,
+                    lastName: document.getElementById('candidate-lname').value,
+                    email: document.getElementById('candidate-email').value,
+                    phone: document.getElementById('candidate-phone').value,
+                    linkedin: document.getElementById('candidate-linkedin').value,
+                    coverLetter: document.getElementById('candidate-cover-letter').value,
+                    resume: state.resumeFile.name,
+                    job: state.jobData.title
+                };
+                
+                // Update admin dashboard with new applicant
+                state.adminData.totalApplicants++;
+                state.adminData.pendingReview++;
+                document.getElementById('total-applicants').textContent = state.adminData.totalApplicants;
+                document.getElementById('pending-review').textContent = state.adminData.pendingReview;
+                
+                // Add to recent applicants table
+                const recentApplicants = document.getElementById('recent-applicants');
+                const newRow = document.createElement('tr');
+                newRow.innerHTML = `
+                    <td>${state.applicationData.firstName} ${state.applicationData.lastName}</td>
+                    <td>${state.applicationData.job}</td>
+                    <td>${new Date().toLocaleDateString()}</td>
+                    <td><span class="badge bg-warning">Pending</span></td>
+                `;
+                recentApplicants.insertBefore(newRow, recentApplicants.firstChild);
+                
+                // Show success notification
+                showNotification(`Application submitted successfully!`, 'success');
+                
+                // Navigate to admin page
+                setTimeout(() => {
+                    navigateTo('admin-page');
+                    initChart(); // Initialize chart on admin page
+                    initAnalyticsCharts(); // Initialize analytics charts
+                }, 1000);
+            });
+            
+            // Back buttons
+            document.getElementById('back-to-login').addEventListener('click', () => {
+                navigateTo('login-page');
+            });
+            
+            document.getElementById('back-to-job-posting').addEventListener('click', () => {
+                navigateTo('job-posting-page');
+            });
+            
+            document.getElementById('back-to-application').addEventListener('click', () => {
+                navigateTo('application-page');
+            });
+            
+            // Admin sidebar navigation
+            document.querySelectorAll('.admin-sidebar .nav-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Update active link
+                    document.querySelectorAll('.admin-sidebar .nav-link').forEach(l => {
+                        l.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    
+                    // Show corresponding section
+                    const sectionId = this.getAttribute('data-section') + '-section';
+                    document.querySelectorAll('.admin-section').forEach(section => {
+                        section.style.display = 'none';
+                    });
+                    document.getElementById(sectionId).style.display = 'block';
+                    
+                    // Initialize charts if analytics section is clicked
+                    if (sectionId === 'analytics-section') {
+                        initAnalyticsCharts();
+                    }
+                });
+            });
+            
+            // Create new job button
+            document.getElementById('create-new-job').addEventListener('click', () => {
+                showNotification('Redirecting to job creation page...', 'info');
+                setTimeout(() => {
+                    navigateTo('job-posting-page');
+                }, 1500);
+            });
+            
+            // Finish workflow button
+            document.getElementById('finish-workflow').addEventListener('click', () => {
+                showNotification('Workflow completed successfully! You can now manage your applicants.', 'success');
+            });
+            
+            // Logout button
+            document.getElementById('logout-btn').addEventListener('click', () => {
+                // Reset state
+                state.currentPage = 'login-page';
+                state.selectedJobCategory = null;
+                state.jobData = null;
+                state.applicationData = null;
+                state.otpVerified = false;
+                state.firstTimeLoginChecked = false;
+                state.passwordValid = false;
+                state.employerProfile = {
+                    name: '',
+                    experienceLevel: '',
+                    company: '',
+                    yearsExperience: '',
+                    previousCompany: '',
+                    email: '',
+                    phone: ''
+                };
+                state.generatedOTP = null;
+                
+                // Reset forms
+                document.getElementById('login-form').reset();
+                document.getElementById('signup-form').reset();
+                document.getElementById('job-posting-form').reset();
+                document.getElementById('application-form').reset();
+                
+                // Reset OTP section
+                document.getElementById('otp-section').style.display = 'none';
+                document.getElementById('signup-submit-btn').disabled = true;
+                document.getElementById('otp-verified-text').style.display = 'none';
+                document.getElementById('otp-timer').style.display = 'block';
+                clearInterval(otpTimer);
+                
+                // Reset file upload
+                fileInfo.style.display = 'none';
+                resumeFileInput.value = '';
+                
+                // Reset job category selection
+                document.querySelectorAll('.job-category-card').forEach(c => {
+                    c.classList.remove('selected');
+                });
+                
+                // Reset experience selection
+                document.querySelectorAll('.experience-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                
+                // Reset sections
+                document.getElementById('company-name-section').style.display = 'none';
+                document.getElementById('experience-details-section').style.display = 'none';
+                document.getElementById('password-rules').classList.remove('show');
+                
+                // Reset password validation UI
+                document.querySelectorAll('.password-rules li').forEach(li => {
+                    li.classList.remove('rule-valid');
+                    li.classList.add('rule-invalid');
+                });
+                
+                // Reset currency selection
+                document.getElementById('job-currency').value = 'USD';
+                
+                // Navigate to login page
+                navigateTo('login-page');
+                showNotification('You have been logged out successfully', 'success');
+            });
+        }
+
+        // Initialize chart on admin page
+        function initChart() {
+            const ctx = document.getElementById('statusChart').getContext('2d');
+            
+            // Destroy existing chart if it exists
+            if (window.statusChart) {
+                window.statusChart.destroy();
+            }
+            
+            window.statusChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Pending Review', 'Shortlisted', 'Rejected', 'Hired'],
+                    datasets: [{
+                        data: [state.adminData.pendingReview, 7, state.adminData.rejected, 6],
+                        backgroundColor: [
+                            'rgba(255, 159, 64, 0.7)',
+                            'rgba(75, 192, 192, 0.7)',
+                            'rgba(255, 99, 132, 0.7)',
+                            'rgba(54, 162, 235, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 159, 64, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialize the application when DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
